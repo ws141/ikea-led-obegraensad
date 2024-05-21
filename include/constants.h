@@ -4,11 +4,20 @@
 #define ENABLE_SERVER
 
 #ifdef ESP32
-#define PIN_ENABLE 26
-#define PIN_DATA 27
-#define PIN_CLOCK 14
-#define PIN_LATCH 12
-#define PIN_BUTTON 16
+#ifdef ESP32DEV
+#define PIN_ENABLE 22
+#define PIN_DATA 23
+#define PIN_CLOCK 2
+#define PIN_LATCH 15
+#define PIN_BUTTON 21
+#endif
+#ifdef TTGO_LORA32_V21
+#define PIN_ENABLE 22
+#define PIN_DATA 23
+#define PIN_CLOCK 2
+#define PIN_LATCH 15
+#define PIN_BUTTON 21
+#endif
 #endif
 
 #ifdef ESP8266
