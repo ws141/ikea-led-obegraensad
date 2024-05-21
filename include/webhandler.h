@@ -9,3 +9,4 @@ void handleGetMetadata(AsyncWebServerRequest *request);
 void handleSetPlugin(AsyncWebServerRequest *request);
 void handleSetBrightness(AsyncWebServerRequest *request);
 void handleGetData(AsyncWebServerRequest *request);
+void handleSetRotation(AsyncWebServerRequest *request);

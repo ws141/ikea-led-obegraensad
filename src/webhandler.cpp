@@ -87,6 +87,7 @@ void handleSetBrightness(AsyncWebServerRequest *request)
     }
 
     Screen.setBrightness(value);
+    Screen.persist();
 
     request->send(200, "text/plain");
 }
@@ -153,4 +154,13 @@ void handleGetMetadata(AsyncWebServerRequest *request)
     serializeJson(jsonDocument, output);
 
     request->send(200, "application/json", output);
+}
+
+void handleSetRotation(AsyncWebServerRequest *request) {
+
+    Screen.currentRotation = Screen.currentRotation > 3 ? 1 : Screen.currentRotation + 1;
+
+    Screen.persist();
+
+    request->send(200, "text/plain", "Message received");
 }

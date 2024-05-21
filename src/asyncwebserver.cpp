@@ -30,6 +30,8 @@ void initWebServer()
   server.on("/api/brightness", HTTP_PATCH, handleSetBrightness);
   server.on("/api/data", HTTP_GET, handleGetData);
 
+  server.on("/api/rotate", HTTP_PATCH, handleSetRotation);
+
   server.begin();
 }
 
