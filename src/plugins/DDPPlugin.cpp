@@ -6,7 +6,9 @@ void DDPPlugin::setup()
     if (udp->listen(4048))
     {
         Serial.print("DDP server at IP: ");
+        #ifdef ENABLE_SERVER
         Serial.print(WiFi.localIP());
+        #endif
         Serial.println(" port: 4048");
 
         // Network runs on Core 0, renderBuffer writes are thus concurrent with onScreenTimer's SPI writing.
