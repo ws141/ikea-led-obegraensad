@@ -80,7 +80,13 @@ void connectToWiFi()
   wifiManager.setSTAStaticIPConfig(ip, gwy, subnet, dns);
 #endif
 
-  wifiManager.autoConnect(WIFI_MANAGER_SSID);
+  wifiManager.setConfigPortalTimeout(300);
+  bool res = wifiManager.autoConnect(WIFI_MANAGER_SSID);
+  if (!res)
+  {
+    Serial.println("Failed to connect - RESTARTING...");
+    ESP.restart();
+  }
 
 #ifdef ESP32
   if (MDNS.begin(WIFI_HOSTNAME))
