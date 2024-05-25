@@ -1,3 +1,5 @@
+#include "utils.h"
+
 #include "plugins/BigClockPlugin.h"
 
 void BigClockPlugin::setup()
@@ -10,36 +12,51 @@ void BigClockPlugin::setup()
   Screen.setPixel(10, 7, 1);
   Screen.setPixel(11, 7, 1);
 
-  previousMinutes = -1;
   previousHour = -1;
+  previousMinutes = -1;
 }
 
 void BigClockPlugin::loop()
 {
-  if (getLocalTime(&timeinfo))
-  {
-    if (previousHour != timeinfo.tm_hour || previousMinutes != timeinfo.tm_min)
-    {
-      std::vector<int> hh = {(timeinfo.tm_hour - timeinfo.tm_hour % 10) / 10, timeinfo.tm_hour % 10};
-      std::vector<int> mm = {(timeinfo.tm_min - timeinfo.tm_min % 10) / 10, timeinfo.tm_min % 10};
-      bool leadingZero = (hh.at(0) == 0);
-      Screen.clear();
-      if (leadingZero)
-      {
-        hh.erase(hh.begin());
-        Screen.drawBigNumbers(COLS / 2, 0, hh);
-        Screen.drawBigNumbers(0, ROWS / 2, mm);
-      }
-      else
-      {
-        Screen.drawBigNumbers(0, 0, hh);
-        Screen.drawBigNumbers(0, ROWS / 2, mm);
-      }
-    }
-
-    previousMinutes = timeinfo.tm_min;
-    previousHour = timeinfo.tm_hour;
+  // Get current time
+  bool timeFetched = getLocalTime(&timeinfo);
+  if(!timeFetched){
+    return;
   }
+
+  // If first fetch then clear screen
+  if(previousMinutes == -1 && previousHour == -1){
+    Screen.clear();
+  }
+
+  // If time has changed
+  if (previousHour == timeinfo.tm_hour && previousMinutes == timeinfo.tm_min){
+    return;
+  }
+
+  // Turn hour and minutes into vectors with leading zeroes
+  std::vector<int> hh = {(timeinfo.tm_hour - timeinfo.tm_hour % 10) / 10, timeinfo.tm_hour % 10};
+  std::vector<int> mm = {(timeinfo.tm_min - timeinfo.tm_min % 10) / 10, timeinfo.tm_min % 10};
+
+  // Clear leading zeroes for hour values less then 10
+  int hourPosX = 0;
+  if (hh.at(0) == 0){
+    hh.erase(hh.begin());
+    hourPosX = COLS / 2;
+    Screen.clear();
+  }
+
+  // Draw on screen
+  Screen.drawBigNumbers(hourPosX, 0, hh, Screen.getCurrentBrightness());
+  Screen.drawBigNumbers(0, ROWS / 2, mm, Screen.getCurrentBrightness());
+
+  // Clear vectors
+  hh.clear();
+  mm.clear();
+
+  // Update previous values
+  previousHour = timeinfo.tm_hour;
+  previousMinutes = timeinfo.tm_min;
 }
 
 const char *BigClockPlugin::getName() const
